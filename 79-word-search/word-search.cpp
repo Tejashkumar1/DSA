@@ -1,36 +1,43 @@
 class Solution {
 public:
-    bool exist(vector<vector<char>>& board, string word) {
-        int m = board.size();
-        int n = board[0].size();
-        
-        function<bool(int, int, int)> backtrack = [&](int i, int j, int k) {
-            if (k == word.length()) {
+    int m, n;
+    vector<vector<int>> del{{-1,0},{0,1},{1,0},{0,-1}};
+
+    bool dfs(vector<vector<char>>& board, string& word, int r, int c, int pos) {
+        if(pos == word.size()) return true;
+        if(r<0 || r>=m || c<0 || c>=n || board[r][c] != word[pos]) return false;
+
+        char temp = board[r][c];
+        board[r][c] = '#'; // mark visited
+
+        for(auto &d : del){
+            if(dfs(board, word, r+d[0], c+d[1], pos+1))
                 return true;
-            }
-            if (i < 0 || i >= m || j < 0 || j >= n || board[i][j] != word[k]) {
-                return false;
-            }
-            
-            char temp = board[i][j];
-            board[i][j] = '\0';
-            
-            if (backtrack(i + 1, j, k + 1) || backtrack(i - 1, j, k + 1) || 
-                backtrack(i, j + 1, k + 1) || backtrack(i, j - 1, k + 1)) {
-                return true;
-            }
-            
-            board[i][j] = temp; 
-            return false;
-        };
-        
-        for (int i = 0; i < m; ++i) {
-            for (int j = 0; j < n; ++j) {
-                if (backtrack(i, j, 0)) {
-                    return true;
-                }
-            }
         }
+
+        board[r][c] = temp; // backtrack
+        return false;
+    }
+
+    bool exist(vector<vector<char>>& board, string word) {
+        m = board.size();
+        n = board[0].size();
+
+        // Early check: impossible to form word
+        unordered_map<char,int> freqWord, freqBoard;
+        for(char c : word) freqWord[c]++;
+        for(auto &row : board) for(char c : row) freqBoard[c]++;
+        for(auto &[c,f] : freqWord) if(freqBoard[c]<f) return false;
+
+        // Optional: reverse word if last char rarer
+        if(freqBoard[word[0]] > freqBoard[word.back()])
+            reverse(word.begin(), word.end());
+
+        for(int i=0;i<m;i++)
+            for(int j=0;j<n;j++)
+                if(board[i][j] == word[0] && dfs(board, word, i, j, 0))
+                    return true;
+
         return false;
     }
 };
