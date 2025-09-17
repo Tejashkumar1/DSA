@@ -9,13 +9,12 @@ class Solution {
   }
 
  private:
-  // Finds n numbers that add up to the target in [l, r].
   void nSum(const vector<int>& nums, long n, long target, int l, int r,
             vector<int>& path, vector<vector<int>>& ans) {
     if (r - l + 1 < n || target < nums[l] * n || target > nums[r] * n)
       return;
     if (n == 2) {
-      // Similar to the sub procedure in 15. 3Sum
+      
       while (l < r) {
         const int sum = nums[l] + nums[r];
         if (sum == target) {
