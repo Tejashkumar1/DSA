@@ -14,7 +14,6 @@ class Solution {
     if (r - l + 1 < n || target < nums[l] * n || target > nums[r] * n)
       return;
     if (n == 2) {
-      
       while (l < r) {
         const int sum = nums[l] + nums[r];
         if (sum == target) {
