@@ -1,26 +1,21 @@
 class Solution {
 public:
     double myPow(double x, int n) {
-    
-    if(n == 0) return 1.0;
-        if(x == 0) return 0.0;
-        if(x == 1) return 1.0;
-        if(x == -1) return (n % 2 == 0) ? 1.0 : -1.0;
-
-        long long binForm = n;
+        long long N= n;
         if(n < 0){
-            x = 1 / x;
-            binForm = -binForm;
+            x = 1/x;
+            N = -N;
         }
-
-        double ans = 1;
-        while(binForm > 0) {
-            if(binForm & 1) { 
-                ans *= x;
-            }
-            x *= x;
-            binForm >>= 1; 
-        }
-        return ans;
+       if(N == 0){
+        return 1;
+       } 
+       double halfPow = myPow(x,N/2);
+       double halfPowSquare = halfPow * halfPow;
+       if(N % 2 != 0){
+        return x * halfPowSquare;
+       }
+       else{
+        return halfPowSquare;
+       }
     }
 };
